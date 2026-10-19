@@ -27,14 +27,14 @@ jobs:
 
       - name: Build solution
         run: > 
-          dotnet build Patrimonio.sln 
+          dotnet build Patrimonio/Patrimonio.slnx
           --configuration Release 
           --no-restore
           --warnaserror
 
       - name: Run unit tests
         run: > 
-            dotnet test Patrimonio.slnx
+            dotnet test Patrimonio/Patrimonio.slnx
             --configuration Release 
             --no-restore
             --no-build
