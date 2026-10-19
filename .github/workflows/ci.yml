@@ -23,7 +23,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore Patrimonio/Patrimonio.sln
+        run: dotnet restore Patrimonio/Patrimonio.slnx
 
       - name: Build solution
         run: > 
@@ -34,7 +34,7 @@ jobs:
 
       - name: Run unit tests
         run: > 
-            dotnet test Patrimonio.sln 
+            dotnet test Patrimonio.slnx
             --configuration Release 
             --no-restore
             --no-build
