@@ -1,0 +1,51 @@
+name: CodeQL - Security Analysis
+
+on:
+  push:
+    branches: [main, develop]
+  
+  pull_request:
+    branches: [main, develop]
+
+  schedule:
+    - cron: '0 9 * * 1' # Runs every Sunday at midnight
+    
+  #permite executar o workflow manualmente na aba Actions.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  
+jobs:
+  analyze:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: csharp
+          build-mode: manual #utiliza os comandos de build definidos no workflow para construir a base de análise.
+          queries: security-extended #executa a suíte padrão de segurança e consultas adicionais, podendo encontrar mais problemas, inclusive com maior possibilidade de falsos positivos.
+
+      - name: Restore dependencies
+        run: dotnet restore Patrimonio.sln
+
+      - name: Build for CodeQL 
+        run: > 
+          dotnet build Patrimonio.sln 
+          --configuration Release 
+          --no-restore          
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:csharp"
