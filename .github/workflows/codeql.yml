@@ -37,7 +37,7 @@ jobs:
           queries: security-extended #executa a suíte padrão de segurança e consultas adicionais, podendo encontrar mais problemas, inclusive com maior possibilidade de falsos positivos.
 
       - name: Restore dependencies
-        run: dotnet restore Patrimonio.sln
+        run: dotnet restore Patrimonio/Patrimonio.slnx
 
       - name: Build for CodeQL 
         run: > 
