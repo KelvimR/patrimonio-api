@@ -41,7 +41,7 @@ jobs:
 
       - name: Build for CodeQL 
         run: > 
-          dotnet build Patrimonio.sln 
+          dotnet build Patrimonio/Patrimonio.slnx 
           --configuration Release 
           --no-restore          
 
