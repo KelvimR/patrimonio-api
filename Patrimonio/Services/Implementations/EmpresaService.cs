@@ -30,12 +30,7 @@ public class EmpresaService : IEmpresaService
         if (empresa is null)
             throw new KeyNotFoundException($"Empresa {empresaId} não encontrada.");
 
-        return new EmpresaDetalheDTO
-        {
-            Empresa = empresa.EmpresaId,
-            RazaoSocial = empresa.RazaoSocial,
-            CNPJ = empresa.CGC
-        };
+        return empresa.ToDetalheDTO();
     }
 
     public Task<EmpresaDetalheDTO> CriarEmpresaAsync(EmpresaDetalheDTO empresa, CancellationToken cancellationToken)

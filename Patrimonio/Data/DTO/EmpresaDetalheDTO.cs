@@ -20,8 +20,8 @@ public class EmpresaDetalheDTO
     public string? CalculoDepreciacaoDollar { get;  set; }
     public string? DepreciaMesAquisicao { get;  set; }
     public string? DepreciaMesAquisicaoDollar { get;  set; }
-    public DateTime? CompetenciaInicial { get;  set; }
-    public DateTime? CompetenciaFinal { get;  set; }
+    public DateOnly? CompetenciaInicial { get;  set; }
+    public DateOnly? CompetenciaFinal { get;  set; }
     public string? TipoCalculo { get;  set; }
     public string? FilialCentralizadora { get;  set; }
 }

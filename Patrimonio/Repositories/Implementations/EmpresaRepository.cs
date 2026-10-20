@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Patrimonio.Context;
 using Patrimonio.Data.DTO;
 using Patrimonio.Models;
+using Patrimonio.Models.ValueObjects;
+using System.Runtime.ConstrainedExecution;
 
 namespace Patrimonio.Repositories.Implementations;
 
@@ -24,11 +26,21 @@ public class EmpresaRepository : IEmpresaRepository
             .ToListAsync(cancellationToken);
     }
 
-    public Task<Empresa?> ObterEmpresaPorIdAsync(string empresaId, CancellationToken cancellationToken)
+    public async Task<Empresa?> ObterEmpresaPorIdAsync(string empresaId, CancellationToken cancellationToken)
     {
-        return _context.Empresas
-            .AsNoTracking()
-            .FirstOrDefaultAsync(e => e.EmpresaId == empresaId, cancellationToken);
+
+        var empresas = await _context.Empresas
+            .FromSqlInterpolated($"""
+                SELECT EMPRESAID, RAZAOSOCIAL, CGC, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP, 
+                    PLACACORPOREA, PLACANAOCORPOREA, CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO, 
+                    DEPRECIAMESAQUISICAODOLLAR, COMPETENCIAINICIAL, COMPETENCIAFINAL, TIPO_CALCULO, FILIAL_CENTRALIZADORA
+                FROM EMPRESAS
+                WHERE EMPRESAID = {empresaId} 
+                """)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+        return empresas.FirstOrDefault();
     }       
     
     public Task<Empresa> AtualizarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken)
