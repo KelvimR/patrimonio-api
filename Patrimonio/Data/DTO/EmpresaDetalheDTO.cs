@@ -4,9 +4,9 @@ namespace Patrimonio.Data.DTO;
 
 public class EmpresaDetalheDTO
 {
-    public string Empresa { get; set; }
-    public string RazaoSocial { get; set; }
-    public Cgc CNPJ { get; set; }
+    public string? Empresa { get; set; }
+    public string? RazaoSocial { get; set; }
+    public Cgc? CNPJ { get; set; }
     public string? Endereco { get;  set; }
     public string? Telefone { get;  set; }
     public string? Ramal { get;  set; }

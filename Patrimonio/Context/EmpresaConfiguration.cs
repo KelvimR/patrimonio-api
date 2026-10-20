@@ -27,7 +27,7 @@ public sealed class EmpresaConfiguration : IEntityTypeConfiguration<Empresa>
         builder.Property(e => e.CGC)
            .HasColumnName("CGC")
            .HasConversion(
-                cgc => cgc.Numero,
+                cgc => cgc!.Numero,
                 valor => new Cgc(valor))
            .HasMaxLength(50);
 

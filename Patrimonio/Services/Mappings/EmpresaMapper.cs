@@ -16,6 +16,8 @@ public static class EmpresaMapper
 
     public static EmpresaDetalheDTO ToDetalheDTO(this Empresa empresa)
     {
+        ArgumentNullException.ThrowIfNull(empresa);
+
         return new EmpresaDetalheDTO
         {
             Empresa = empresa.EmpresaId,

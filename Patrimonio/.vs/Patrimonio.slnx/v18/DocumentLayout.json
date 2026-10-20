@@ -1,28 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\TEMP\\patrimonio-api\\Patrimonio\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|c:\\temp\\patrimonio-api\\patrimonio\\repositories\\implementations\\empresarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|solutionrelative:repositories\\implementations\\empresarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|c:\\temp\\patrimonio-api\\patrimonio\\repositories\\iempresarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|solutionrelative:repositories\\iempresarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|c:\\temp\\patrimonio-api\\patrimonio\\controllers\\empresacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|solutionrelative:controllers\\empresacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|c:\\temp\\patrimonio-api\\patrimonio\\services\\iempresaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|solutionrelative:services\\iempresaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|c:\\temp\\patrimonio-api\\patrimonio\\services\\implementations\\empresaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9B4BC82-0DBD-5B00-0692-228CE75A6B95}|Patrimonio.csproj|solutionrelative:services\\implementations\\empresaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -30,21 +9,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "IEmpresaRepository.cs",
-              "DocumentMoniker": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Repositories\\IEmpresaRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\IEmpresaRepository.cs",
-              "ToolTip": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Repositories\\IEmpresaRepository.cs",
-              "RelativeToolTip": "Repositories\\IEmpresaRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T18:13:57.656Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -56,58 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IEmpresaService.cs",
-              "DocumentMoniker": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Services\\IEmpresaService.cs",
-              "RelativeDocumentMoniker": "Services\\IEmpresaService.cs",
-              "ToolTip": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Services\\IEmpresaService.cs",
-              "RelativeToolTip": "Services\\IEmpresaService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T18:03:44.436Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "EmpresaService.cs",
-              "DocumentMoniker": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Services\\Implementations\\EmpresaService.cs",
-              "RelativeDocumentMoniker": "Services\\Implementations\\EmpresaService.cs",
-              "ToolTip": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Services\\Implementations\\EmpresaService.cs",
-              "RelativeToolTip": "Services\\Implementations\\EmpresaService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T18:03:33.108Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EmpresaRepository.cs",
-              "DocumentMoniker": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Repositories\\Implementations\\EmpresaRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Implementations\\EmpresaRepository.cs",
-              "ToolTip": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Repositories\\Implementations\\EmpresaRepository.cs",
-              "RelativeToolTip": "Repositories\\Implementations\\EmpresaRepository.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBsAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-19T19:46:08.331Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EmpresaController.cs",
-              "DocumentMoniker": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Controllers\\EmpresaController.cs",
-              "RelativeDocumentMoniker": "Controllers\\EmpresaController.cs",
-              "ToolTip": "C:\\TEMP\\patrimonio-api\\Patrimonio\\Controllers\\EmpresaController.cs",
-              "RelativeToolTip": "Controllers\\EmpresaController.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAwBUAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-19T19:29:17.374Z",
-              "EditorCaption": ""
             }
           ]
         }
