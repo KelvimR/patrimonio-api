@@ -1,7 +1,6 @@
 ﻿using Patrimonio.Data.DTO;
 using Patrimonio.Repositories;
 using Patrimonio.Services.Mappings;
-using System.Runtime.CompilerServices;
 
 namespace Patrimonio.Services.Implementations;
 
@@ -45,7 +44,14 @@ public class EmpresaService : IEmpresaService
         
     public async Task DeletarEmpresa(string empresaId, CancellationToken cancellationToken)
     {
-        var verificaEmpresa = await ObterEmpresaPorIdAsync(empresaId, cancellationToken);
-        await _empresaRepository.DeletarEmpresa(empresaId, cancellationToken);        
+        await ObterEmpresaPorIdAsync(empresaId, cancellationToken);
+        
+        var excluida = await _empresaRepository.DeletarEmpresa(empresaId, cancellationToken);
+
+        if (!excluida)
+            throw new KeyNotFoundException("Empresa {empresaId} não encontrada ou não foi excluída.");
+
+        if (excluida)
+            _logger.LogInformation("Empresa {empresaId} excluida com sucesso.", empresaId);            
     }
 }

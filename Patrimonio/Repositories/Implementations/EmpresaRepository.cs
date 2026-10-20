@@ -48,9 +48,13 @@ public class EmpresaRepository : IEmpresaRepository
         throw new NotImplementedException();
     }
 
-    public async Task DeletarEmpresa(string empresaId, CancellationToken cancellationToken    )
+    public async Task<bool> DeletarEmpresa(string empresaId, CancellationToken cancellationToken)
     {
-        _context.Remove(empresaId);
+        var linhasAfetadas = await _context.Empresas
+            .Where(e => e.EmpresaId == empresaId)
+            .ExecuteDeleteAsync(cancellationToken);
+
         await _context.SaveChangesAsync(cancellationToken);
+        return linhasAfetadas > 0;
     }
 }
