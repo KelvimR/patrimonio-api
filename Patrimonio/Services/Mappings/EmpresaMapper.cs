@@ -36,8 +36,13 @@ public static class EmpresaMapper
             DepreciaMesAquisicaoDollar = empresa.DepreciaMesAquisicaoDollar,
             PlacaCorporea = empresa.PlacaCorporea,
             PlacaNaoCorporea = empresa.PlacaNaoCorporea,
-            CompetenciaInicial = empresa.CompetenciaInicial,
-            CompetenciaFinal = empresa.CompetenciaFinal,
+            
+            CompetenciaInicial = empresa.CompetenciaInicial.HasValue 
+                ? DateOnly.FromDateTime(empresa.CompetenciaInicial.Value)  : null,
+            
+            CompetenciaFinal = empresa.CompetenciaInicial.HasValue 
+                ? DateOnly.FromDateTime(empresa.CompetenciaInicial.Value) : null,
+
             FilialCentralizadora = empresa.FilialCentralizadora,
             TipoCalculo = empresa.TipoCalculo
         };

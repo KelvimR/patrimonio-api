@@ -3,10 +3,13 @@ using Patrimonio.Repositories;
 using Patrimonio.Repositories.Implementations;
 using Patrimonio.Services;
 using Patrimonio.Services.Implementations;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.AddSerilogLogging();
+
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
 builder.Services.AddGlobalExceptionHandling();
 builder.Services.AddProblemDetails();
@@ -32,4 +35,15 @@ app.MapControllers();
 
 app.UseSwaggerSpecification();
 
-app.Run();
+app.UseSerilogRequestLogging();
+
+try
+{
+    app.Run();
+}
+finally
+{
+    //Estamos garantindo que o Serilog tente descarregar os eventos pendentes durante o encerramento normal da aplicação.
+    Log.CloseAndFlush();
+}
+

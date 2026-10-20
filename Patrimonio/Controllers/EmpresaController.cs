@@ -18,9 +18,9 @@ public class EmpresaController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(List<EmpresaResumoDTO>))]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
+    [ProducesResponseType(typeof(List<EmpresaResumoDTO>), StatusCodes.Status200OK)]   
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ObterEmpresas(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Obtendo empresas...");
@@ -31,5 +31,21 @@ public class EmpresaController : ControllerBase
 
         return Ok(empresas);
 
+    }
+
+    [HttpGet("{empresaId}")]
+    [ProducesResponseType(typeof(EmpresaDetalheDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<EmpresaDetalheDTO>> ObterEmpresaPorId(
+        [FromRoute] string empresaId, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando consulta à empresa {empresaId}...", empresaId);
+
+        var empresa = await _empresaService.ObterEmpresaPorIdAsync(empresaId, cancellationToken);
+
+        _logger.LogInformation("Empresa {empresaId} consultada com sucesso.", empresaId);
+
+        return Ok(empresa);
     }
 }
