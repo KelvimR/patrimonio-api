@@ -55,6 +55,5 @@ public class EmpresaController : ControllerBase
     {     
         await _empresaService.DeletarEmpresa(empresaId, cancellationToken);                
         return NoContent();
-
     }
 }
