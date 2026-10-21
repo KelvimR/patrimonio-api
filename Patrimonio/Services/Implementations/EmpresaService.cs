@@ -1,7 +1,6 @@
-﻿using Patrimonio.Data.DTO;
+﻿using Patrimonio.Data.DTO.Empresa;
 using Patrimonio.Repositories;
 using Patrimonio.Services.Mappings;
-using System.Runtime.CompilerServices;
 
 namespace Patrimonio.Services.Implementations;
 
@@ -38,14 +37,31 @@ public class EmpresaService : IEmpresaService
         throw new NotImplementedException();
     }
 
-    public Task<EmpresaDetalheDTO> AtualizarEmpresaAsync(EmpresaDetalheDTO empresa, CancellationToken cancellationToken)
+    public async Task AtualizarEmpresaAsync(EmpresaUpdateDTO empresa, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(empresa);
+        if (string.IsNullOrWhiteSpace(empresa.Empresa))
+            throw new ArgumentException("A empresa é obrigatória.", nameof(empresa.Empresa));
+
+        await ObterEmpresaPorIdAsync(empresa.Empresa, cancellationToken);        
+        var entidade = EmpresaMapper.ToUpdateEmpresa(empresa);
+        var atualizada = await _empresaRepository.AtualizarEmpresaAsync(entidade, cancellationToken);
+        if (!atualizada)
+            throw new KeyNotFoundException($"Empresa {empresa.Empresa} não encontrada para atualização.");
+
+        _logger.LogInformation("Empresa {empresa.Empresa} atualizada com sucesso.", empresa.Empresa);
+        
     }
         
     public async Task DeletarEmpresa(string empresaId, CancellationToken cancellationToken)
     {
-        var verificaEmpresa = await ObterEmpresaPorIdAsync(empresaId, cancellationToken);
-        await _empresaRepository.DeletarEmpresa(empresaId, cancellationToken);        
+        await ObterEmpresaPorIdAsync(empresaId, cancellationToken);
+        var excluida = await _empresaRepository.DeletarEmpresa(empresaId, cancellationToken);
+
+        if (!excluida)
+            throw new KeyNotFoundException("Empresa {empresaId} não encontrada ou não foi excluída.");
+
+        if (excluida)
+            _logger.LogInformation("Empresa {empresaId} excluida com sucesso.", empresaId);            
     }
 }
