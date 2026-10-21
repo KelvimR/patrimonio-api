@@ -1,4 +1,6 @@
 ﻿using Patrimonio.Data.DTO.Empresa;
+using Patrimonio.Exceptions;
+using Patrimonio.Models;
 using Patrimonio.Repositories;
 using Patrimonio.Services.Mappings;
 
@@ -32,9 +34,22 @@ public class EmpresaService : IEmpresaService
         return empresa.ToDetalheDTO();
     }
 
-    public Task<EmpresaDetalheDTO> CriarEmpresaAsync(EmpresaDetalheDTO empresa, CancellationToken cancellationToken)
+    public async Task<EmpresaDetalheDTO> CriarEmpresaAsync(EmpresaInsereDTO empresa, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(empresa);
+        
+        if(string.IsNullOrWhiteSpace(empresa.EmpresaId))
+            throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresa.EmpresaId));
+
+        var empresaExiste = await _empresaRepository.ObterEmpresaPorIdAsync(empresa.EmpresaId, cancellationToken);
+        if (empresaExiste is not null)
+            throw new ConflictException($"Empresa {empresa.EmpresaId} já cadastrada!");
+
+        var entidade = EmpresaMapper.ToInsereEmpresa(empresa);
+        var empresaCriada = await _empresaRepository.CriarEmpresaAsync(entidade, cancellationToken);
+
+        _logger.LogInformation("Empresa {EmpresaId} criada com sucesso.",empresa.EmpresaId);
+        return empresaCriada.ToDetalheDTO();                
     }
 
     public async Task AtualizarEmpresaAsync(EmpresaUpdateDTO empresa, CancellationToken cancellationToken)
@@ -55,11 +70,14 @@ public class EmpresaService : IEmpresaService
         
     public async Task DeletarEmpresa(string empresaId, CancellationToken cancellationToken)
     {
+        if(string.IsNullOrWhiteSpace(empresaId))
+            throw new ArgumentException("O identificador da empresa é obrigatório.",nameof(empresaId));
+
         await ObterEmpresaPorIdAsync(empresaId, cancellationToken);
-        var excluida = await _empresaRepository.DeletarEmpresa(empresaId, cancellationToken);
+        var excluida = await _empresaRepository.DeletarEmpresaAsync(empresaId, cancellationToken);
 
         if (!excluida)
-            throw new KeyNotFoundException("Empresa {empresaId} não encontrada ou não foi excluída.");
+            throw new KeyNotFoundException($"Empresa {empresaId} não encontrada ou não foi excluída.");
 
         if (excluida)
             _logger.LogInformation("Empresa {empresaId} excluida com sucesso.", empresaId);            

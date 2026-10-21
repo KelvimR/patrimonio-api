@@ -41,6 +41,21 @@ public class EmpresaController : ControllerBase
 
     }
 
+    [HttpPost]
+    [ProducesResponseType(typeof(EmpresaDetalheDTO), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> CriarEmpresa(
+        [FromBody] EmpresaInsereDTO dto, CancellationToken cancellation)
+    {
+        var empresa = await _empresaService.CriarEmpresaAsync(dto, cancellation);
+        return CreatedAtAction(
+            nameof(ObterEmpresaPorId),
+            new { empresaId = empresa.Empresa}, empresa);        
+    }
+
+
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

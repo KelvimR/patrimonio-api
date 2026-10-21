@@ -1,5 +1,6 @@
 ﻿using Patrimonio.Data.DTO.Empresa;
 using Patrimonio.Models;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Patrimonio.Services.Mappings;
 
@@ -78,5 +79,37 @@ public static class EmpresaMapper
             CompetenciaInicial = dto.CompetenciaInicial?.ToDateTime(TimeOnly.MinValue),
             CompetenciaFinal = dto.CompetenciaFinal?.ToDateTime(TimeOnly.MinValue),
         };
+    }
+
+    public static Empresa ToInsereEmpresa(this EmpresaInsereDTO dto)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+        
+        if (string.IsNullOrWhiteSpace(dto.EmpresaId))
+            throw new ArgumentException("A empresa é obrigatória.", nameof(dto.EmpresaId));
+
+        if (string.IsNullOrWhiteSpace(dto.RazaoSocial))
+            throw new ArgumentException("A razão social é obrigatória.", nameof(dto.RazaoSocial));
+       
+        return new Empresa(dto.EmpresaId, dto.RazaoSocial)
+        {
+            EmpresaId = dto.EmpresaId,
+            RazaoSocial = dto.RazaoSocial,
+            CGC = dto.CGC,
+            FAX = dto.FAX,
+            Ramal = dto.Ramal,
+            Telefone = dto.Telefone,
+            CEP = dto.CEP,
+            Cidade = dto.Cidade,
+            Endereco = dto.Endereco,
+            Estado = dto.Estado,
+            CalculoDepreciacao = dto.CalculoDepreciacao,
+            CalculoDepreciacaoDollar = dto.CalculoDepreciacaoDollar,
+            DepreciaMesAquisicao = dto.DepreciaMesAquisicao,
+            DepreciaMesAquisicaoDollar = dto.DepreciaMesAquisicaoDollar,
+            FilialCentralizadora = dto.FilialCentralizadora,
+            CompetenciaInicial = dto.CompetenciaInicial,
+            CompetenciaFinal = dto.CompetenciaFinal         
+        };        
     }
 }

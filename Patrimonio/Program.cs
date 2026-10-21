@@ -19,6 +19,7 @@ builder.Services.AddRouteConfig();
 
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+builder.Services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
 
 builder.Services.AddControllers();
 
