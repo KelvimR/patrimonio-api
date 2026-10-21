@@ -1,6 +1,6 @@
 ﻿using Patrimonio.Models.ValueObjects;
 
-namespace Patrimonio.Data.DTO;
+namespace Patrimonio.Data.DTO.Empresa;
 
 public class EmpresaDetalheDTO
 {

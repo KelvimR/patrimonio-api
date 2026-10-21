@@ -1,4 +1,4 @@
-﻿using Patrimonio.Data.DTO;
+﻿using Patrimonio.Data.DTO.Empresa;
 using Patrimonio.Models;
 
 namespace Patrimonio.Services.Mappings;
@@ -45,6 +45,38 @@ public static class EmpresaMapper
 
             FilialCentralizadora = empresa.FilialCentralizadora,
             TipoCalculo = empresa.TipoCalculo
+        };
+    }
+
+    public static Empresa ToUpdateEmpresa(this EmpresaUpdateDTO dto)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+        
+        if (string.IsNullOrWhiteSpace(dto.RazaoSocial))
+            throw new ArgumentException("A razão social é obrigatória.", nameof(dto.RazaoSocial));
+
+        if (string.IsNullOrWhiteSpace(dto.Empresa))
+            throw new ArgumentException("A empresa é obrigatória.", nameof(dto.Empresa));
+
+        return new Empresa(dto.Empresa, dto.RazaoSocial)
+        {
+            EmpresaId = dto.Empresa,
+            RazaoSocial = dto.RazaoSocial,
+            CGC = dto.CNPJ,
+            FAX = dto.FAX,
+            Ramal = dto.Ramal,
+            Telefone = dto.Telefone,
+            CEP = dto.CEP,
+            Cidade = dto.Cidade,
+            Endereco = dto.Endereco,
+            Estado = dto.Estado,
+            CalculoDepreciacao = dto.CalculoDepreciacao,
+            CalculoDepreciacaoDollar = dto.CalculoDepreciacaoDollar,
+            DepreciaMesAquisicao = dto.DepreciaMesAquisicao,
+            DepreciaMesAquisicaoDollar = dto.DepreciaMesAquisicaoDollar,
+            FilialCentralizadora = dto.FilialCentralizadora,
+            CompetenciaInicial = dto.CompetenciaInicial?.ToDateTime(TimeOnly.MinValue),
+            CompetenciaFinal = dto.CompetenciaFinal?.ToDateTime(TimeOnly.MinValue),
         };
     }
 }
