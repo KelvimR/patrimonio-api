@@ -5,6 +5,7 @@ namespace Patrimonio.Models.ValueObjects;
 public sealed record Cgc
 {
     public string Numero { get; }
+
     public Cgc(string numero)
     {
         if(string.IsNullOrEmpty(numero))

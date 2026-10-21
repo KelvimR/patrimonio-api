@@ -9,5 +9,5 @@ public interface IEmpresaRepository
     Task<Empresa?> ObterEmpresaPorIdAsync(string empresaId, CancellationToken cancellationToken);
     Task<Empresa> CriarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken);
     Task<bool> AtualizarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken);
-    Task<bool> DeletarEmpresa(string empresaId, CancellationToken cancellationToken);
+    Task<bool> DeletarEmpresaAsync(string empresaId, CancellationToken cancellationToken);
 }

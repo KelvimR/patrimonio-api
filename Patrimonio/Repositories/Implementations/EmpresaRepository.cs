@@ -12,12 +12,32 @@ namespace Patrimonio.Repositories.Implementations;
 public class EmpresaRepository : IEmpresaRepository
 {
     private readonly OracleContext _context;
+    private readonly IAuditoriaRepository _auditoria;
 
-    public EmpresaRepository(OracleContext context) => _context = context;
-
-    public Task<Empresa> CriarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken)
+    public EmpresaRepository(OracleContext context, IAuditoriaRepository auditoria)
     {
-        throw new NotImplementedException();
+        _context = context;
+        _auditoria = auditoria;
+    }
+
+    public async Task<Empresa> CriarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(empresa);
+
+        await using var transacao = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+        _context.Empresas.Add(empresa);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        await _auditoria.RegistrarLogAsync(new Auditoria
+        {
+            Operacao = $"API Patrimonio - Inclusão da empresa {empresa.EmpresaId}",
+            Usuario = "KelvimSantos",
+            EmpresaId = empresa.EmpresaId
+        },cancellationToken);
+
+        await transacao.CommitAsync(cancellationToken);
+        return empresa;
     }
 
     public Task<List<Empresa>> ObterEmpresasAsync(CancellationToken cancellationToken)
@@ -29,6 +49,8 @@ public class EmpresaRepository : IEmpresaRepository
 
     public async Task<Empresa?> ObterEmpresaPorIdAsync(string empresaId, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(empresaId))
+            throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresaId));
 
         var empresas = await _context.Empresas
             .FromSqlInterpolated($"""
@@ -45,7 +67,8 @@ public class EmpresaRepository : IEmpresaRepository
     }
 
     public async Task<bool> AtualizarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken)
-    {               
+    {
+        ArgumentNullException.ThrowIfNull(empresa);
         await using var transacao = await _context.Database.BeginTransactionAsync(cancellationToken);        
         
         var alterado = await _context.Database.ExecuteSqlInterpolatedAsync($"""
@@ -58,7 +81,7 @@ public class EmpresaRepository : IEmpresaRepository
                     CIDADE = {empresa.Cidade},
                     ESTADO = {empresa.Estado},
                     CEP = {empresa.CEP},
-                    CGC = {empresa.CGC},
+                    CGC = {empresa.CGC?.Numero},
                     FILIAL_CENTRALIZADORA = {empresa.FilialCentralizadora},
                     COMPETENCIAINICIAL = {empresa.CompetenciaInicial},
                     COMPETENCIAFINAL = {empresa.CompetenciaFinal},
@@ -73,23 +96,47 @@ public class EmpresaRepository : IEmpresaRepository
             return false;        
 
         if (alterado != 1)
-            throw new InvalidOperationException($"Atualização afetou {alterado} registros. Era esperado apenas um.");                
+            throw new InvalidOperationException($"Atualização afetou {alterado} registro(s). Era esperado apenas um.");
 
         //Log para registros na base 
-        //insert
+        await _auditoria.RegistrarLogAsync(new Auditoria
+        {
+            Operacao = $"API Patrimonio - Atualização da empresa {empresa.EmpresaId}",
+            Usuario = "KelvimSantos",
+            EmpresaId = empresa.EmpresaId            
+        }, cancellationToken);
 
         await transacao.CommitAsync(cancellationToken);
         return true;
 
     }
 
-    public async Task<bool> DeletarEmpresa(string empresaId, CancellationToken cancellationToken)
+    public async Task<bool> DeletarEmpresaAsync(string empresaId, CancellationToken cancellationToken)
     {
+
+        if (string.IsNullOrWhiteSpace(empresaId))
+            throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresaId));
+
+        await using var transacao = await _context.Database.BeginTransactionAsync(cancellationToken);
+
         var linhasAfetadas = await _context.Empresas
             .Where(e => e.EmpresaId == empresaId)
             .ExecuteDeleteAsync(cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
-        return linhasAfetadas > 0;
+        if (linhasAfetadas == 0)
+            return false;
+
+        if(linhasAfetadas != 1)
+            throw new InvalidOperationException($"Exclusão afetou {linhasAfetadas} registro(s). Era esperado apenas um.");
+
+        await _auditoria.RegistrarLogAsync(new Auditoria
+        {
+            Operacao = $"API Patrimonio - Exclusão da empresa {empresaId}",
+            Usuario = "KelvimSantos",
+            EmpresaId = empresaId
+        }, cancellationToken);
+
+        await transacao.CommitAsync(cancellationToken);
+        return true;
     }
 }

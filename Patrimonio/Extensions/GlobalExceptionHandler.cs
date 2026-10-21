@@ -27,9 +27,11 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
         var statusCode = exception switch
         {
+            ConflictException => StatusCodes.Status409Conflict,
             BusinessException => StatusCodes.Status400BadRequest,
+            ArgumentException => StatusCodes.Status400BadRequest,
             KeyNotFoundException => StatusCodes.Status404NotFound,
-            UnauthorizedAccessException => StatusCodes.Status403Forbidden,
+            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,            
             _ => StatusCodes.Status500InternalServerError
         };
 
