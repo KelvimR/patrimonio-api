@@ -17,6 +17,13 @@ public class EmpresaService : IEmpresaService
         _logger = logger;
     }
 
+    private static string SanitizeForLog(string? value)
+    {
+        return (value ?? string.Empty)
+            .Replace("\r", string.Empty)
+            .Replace("\n", string.Empty);
+    }
+
     public async Task<List<EmpresaResumoDTO>> ObterEmpresasAsync(CancellationToken cancellationToken)
     {
         var empresas = await _empresaRepository.ObterEmpresasAsync(cancellationToken);
@@ -46,7 +53,8 @@ public class EmpresaService : IEmpresaService
 
         var empresaCriada = await _empresaRepository.CriarEmpresaAsync(dto.ToEntity(), cancellationToken);
 
-        _logger.LogInformation("Empresa {empresaCriada.EmpresaId} criada com sucesso.", empresaCriada.EmpresaId);
+        var empresaIdSanitizada = SanitizeForLog(empresaCriada.EmpresaId);
+        _logger.LogInformation("Empresa {empresaCriada.EmpresaId} criada com sucesso.", empresaIdSanitizada);
         return empresaCriada.ToDetalheDTO();                
     }
 
