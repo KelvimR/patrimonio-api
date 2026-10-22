@@ -1,29 +1,39 @@
 ﻿using Patrimonio.Models.ValueObjects;
+using System.Runtime.CompilerServices;
 
 namespace Patrimonio.Models;
 
 public class Empresa
-{  
-    public string EmpresaId { get;  set; }
-    public string RazaoSocial { get;  set; }
-    public Cgc? CGC { get;  set; }
-    public string? Endereco { get;  set; }
-    public string? Telefone { get;  set; }
-    public string? Ramal { get;  set; }
-    public string? FAX { get;  set; }
-    public string? Cidade { get;  set; }
-    public string? Estado { get;  set; }
-    public string? CEP { get;  set; }
+{
+    public string EmpresaId { get; private set; } = null!;
+    public string RazaoSocial { get; private set; } = null!;
+
+    // Identificação fiscal
+    public Cgc? CGC { get; private set; }
+   
+    //Contato
+    public string? Endereco { get; private  set; }
+    public string? Telefone { get; private  set; }
+    public string? Ramal { get; private set; }
+    public string? FAX { get; private set; }
+    public string? Cidade { get; private set; }
+    public string? Estado { get; private set; }
+    public string? CEP { get; private set; }
+    
+    
     public int? PlacaCorporea { get;  set; }
     public int? PlacaNaoCorporea { get;  set; }
-    public string? CalculoDepreciacao { get;  set; }
-    public string? CalculoDepreciacaoDollar { get;  set; }
-    public string? DepreciaMesAquisicao { get;  set; }
-    public string? DepreciaMesAquisicaoDollar { get;  set; }
-    public DateTime? CompetenciaInicial { get;  set; }
-    public DateTime? CompetenciaFinal { get;  set; }
+    public SimNao? CalculoDepreciacao { get;  set; }
+    public SimNao? CalculoDepreciacaoDollar { get;  set; }
+    public SimNao? DepreciaMesAquisicao { get;  set; }
+    public SimNao? DepreciaMesAquisicaoDollar { get;  set; }
+    public DateTime? CompetenciaInicial { get; private set; }
+    public DateTime? CompetenciaFinal { get; private set; }
     public string? TipoCalculo { get;  set; }
     public string? FilialCentralizadora { get;  set; }
+
+    // Construtor para materialização pelo EF Core
+    public Empresa() { }
 
     public Empresa(string empresaId, string razaoSocial)
     {
@@ -36,27 +46,40 @@ public class Empresa
         RazaoSocial = ValidaRazaoSocial(novaRazaoSocial);        
     }
 
-    public void DefinirCompetencia(DateTime competenciaInicial, DateTime competenciaFinal)
-    {        
-        DateTime hoje = DateTime.Today;
+    public void DefinirCgc(Cgc? cgc)
+    {
+        CGC = cgc;
+    }
 
-        if (competenciaInicial == default)
-            competenciaInicial = new DateTime(hoje.Year, hoje.Month, 1);
+    public void DefinirFilialCentralizadora(string? filial)
+    {
+        FilialCentralizadora = filial;
+    }
+    
+    public void DefinirTipoCalculo(string? tipoCalculo)
+    {
+        TipoCalculo = tipoCalculo;
+    }
 
-        if (competenciaFinal == default)
-            competenciaFinal = new DateTime(competenciaInicial.Year, competenciaInicial.Month, 1).AddMonths(1).AddDays(-1);
+    public void DefinirCompetencia(DateTime inicio, DateTime fim)
+    {
+        if (inicio == default)
+            throw new ArgumentException("Competência inicial inválida.",nameof(inicio));
 
-        if(competenciaFinal < competenciaInicial)
-            throw new ArgumentException("A competência final não pode ser anterior à competência inicial.", nameof(competenciaFinal));
+        if(fim == default)
+            throw new ArgumentException("Competência final inválida.", nameof(fim));
 
-        CompetenciaInicial = competenciaInicial;
-        CompetenciaFinal = competenciaFinal;
+        if (fim < inicio)
+            throw new ArgumentException("Competência final não pode ser anterior à inicial.", nameof(fim));
+
+        CompetenciaInicial = inicio;
+        CompetenciaFinal = fim;
     }    
 
      static string ValidaEmpresaId(string empresaId)
     {
         if (string.IsNullOrWhiteSpace(empresaId))
-            throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresaId));
+            throw new ArgumentException("Identificador obrigatório.", nameof(empresaId));
 
         return empresaId.Trim();
     }
@@ -64,8 +87,39 @@ public class Empresa
      static string ValidaRazaoSocial(string razaoSocial)
     {
         if (string.IsNullOrWhiteSpace(razaoSocial))
-            throw new ArgumentException("A razão social da empresa é obrigatória.", nameof(razaoSocial));
+            throw new ArgumentException("Razão social obrigatória.", nameof(razaoSocial));
 
         return razaoSocial.Trim();
+    }
+
+    public void AtualizarContato(
+        string? endereco,
+        string? cidade,
+        string? estado,
+        string? cep,
+        string? telefone,
+        string? ramal,
+        string? fax
+        )
+    {
+        Endereco = endereco;
+        Cidade = cidade;
+        Estado = estado;
+        CEP = cep;
+        Telefone = telefone;
+        Ramal = ramal;
+        FAX = fax;
+    }
+
+    public void ConfigurarDepreciacao(
+        SimNao? calculoDepreciacao,
+        SimNao? calculoDepreciacaoDollar,
+        SimNao? depreciacaoMesAquisicao,
+        SimNao? depreciacaoMesAquisicaoDollar)
+    {
+        CalculoDepreciacao = calculoDepreciacao;
+        CalculoDepreciacaoDollar = calculoDepreciacaoDollar;
+        DepreciaMesAquisicao = depreciacaoMesAquisicao;
+        DepreciaMesAquisicaoDollar = depreciacaoMesAquisicaoDollar;
     }
 }

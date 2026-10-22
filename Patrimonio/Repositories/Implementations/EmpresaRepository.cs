@@ -26,8 +26,18 @@ public class EmpresaRepository : IEmpresaRepository
 
         await using var transacao = await _context.Database.BeginTransactionAsync(cancellationToken);
 
-        _context.Empresas.Add(empresa);
-        await _context.SaveChangesAsync(cancellationToken);
+        var incluiEmpresa = await _context.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO EMPRESAS (
+                EMPRESAID, RAZAOSOCIAL, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP, CGC, COMPETENCIAINICIAL, COMPETENCIAFINAL,
+                CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO, DEPRECIAMESAQUISICAODOLLAR, TIPO_CALCULO, FILIAL_CENTRALIZADORA)
+            VALUES(
+                {empresa.EmpresaId}, {empresa.RazaoSocial}, {empresa.Endereco}, {empresa.Telefone}, {empresa.Ramal}, {empresa.FAX}, {empresa.Cidade},
+                {empresa.Estado}, {empresa.CEP}, {empresa.CGC?.Numero}, {empresa.CompetenciaInicial}, {empresa.CompetenciaFinal}, {empresa.CalculoDepreciacao?.Valor},
+                {empresa.CalculoDepreciacaoDollar?.Valor}, {empresa.DepreciaMesAquisicao?.Valor}, {empresa.DepreciaMesAquisicaoDollar?.Valor}, {empresa.TipoCalculo}, {empresa.FilialCentralizadora})
+            """);
+
+        if (incluiEmpresa != 1)
+            throw new InvalidOperationException($"Ocorreu um erro durante a criação da empresa {empresa.EmpresaId}.");
 
         await _auditoria.RegistrarLogAsync(new Auditoria
         {
@@ -85,10 +95,10 @@ public class EmpresaRepository : IEmpresaRepository
                     FILIAL_CENTRALIZADORA = {empresa.FilialCentralizadora},
                     COMPETENCIAINICIAL = {empresa.CompetenciaInicial},
                     COMPETENCIAFINAL = {empresa.CompetenciaFinal},
-                    CALCULADEPRECIACAO = {empresa.CalculoDepreciacao},
-                    CALCULADEPRECIACAODOLLAR = {empresa.CalculoDepreciacaoDollar},
-                    DEPRECIAMESAQUISICAO = {empresa.DepreciaMesAquisicao},
-                    DEPRECIAMESAQUISICAODOLLAR = {empresa.DepreciaMesAquisicaoDollar}
+                    CALCULADEPRECIACAO = {empresa.CalculoDepreciacao?.Valor},
+                    CALCULADEPRECIACAODOLLAR = {empresa.CalculoDepreciacaoDollar?.Valor},
+                    DEPRECIAMESAQUISICAO = {empresa.DepreciaMesAquisicao?.Valor},
+                    DEPRECIAMESAQUISICAODOLLAR = {empresa.DepreciaMesAquisicaoDollar?.Valor}
                 WHERE EMPRESAID = {empresa.EmpresaId}
                 """, cancellationToken);
 

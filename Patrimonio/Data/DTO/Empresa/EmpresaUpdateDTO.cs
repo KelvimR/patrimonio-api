@@ -1,10 +1,11 @@
-﻿using Patrimonio.Models.ValueObjects;
+﻿using Patrimonio.Models;
+using Patrimonio.Models.ValueObjects;
 
 namespace Patrimonio.Data.DTO.Empresa;
 
 public class EmpresaUpdateDTO
 {
-    public string? Empresa { get; set; }
+    public string? EmpresaId { get; set; }
     public string? RazaoSocial { get; set; }
     public Cgc? CNPJ { get; set; }
     public string? CEP { get; set; }
@@ -20,5 +21,6 @@ public class EmpresaUpdateDTO
     public string? CalculoDepreciacao { get; set; }
     public string? CalculoDepreciacaoDollar { get; set; }
     public string? DepreciaMesAquisicao { get; set; }
-    public string? DepreciaMesAquisicaoDollar { get; set; }      
+    public string? DepreciaMesAquisicaoDollar { get; set; }
+    public string? TipoCalculo { get; set; }
 }

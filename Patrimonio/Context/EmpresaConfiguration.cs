@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Options;
 using Patrimonio.Models;
 using Patrimonio.Models.ValueObjects;
 
@@ -9,6 +11,10 @@ public sealed class EmpresaConfiguration : IEntityTypeConfiguration<Empresa>
 {
     public void Configure(EntityTypeBuilder<Empresa> builder)
     {
+
+        var converter = new ValueConverter<SimNao, string>(
+            valor => valor.Valor,
+            valor => SimNao.Criar(valor));
        
         builder.ToTable("EMPRESAS");
 
@@ -67,19 +73,23 @@ public sealed class EmpresaConfiguration : IEntityTypeConfiguration<Empresa>
 
         builder.Property(e => e.CalculoDepreciacao)
             .HasColumnName("CALCULADEPRECIACAO")
-            .HasMaxLength(1);
+            .HasMaxLength(1)
+            .HasConversion((ValueConverter)converter);
 
         builder.Property(e => e.CalculoDepreciacaoDollar)
             .HasColumnName("CALCULADEPRECIACAODOLLAR")
-            .HasMaxLength(1);
+            .HasMaxLength(1)
+            .HasConversion((ValueConverter)converter);
 
         builder.Property(e => e.DepreciaMesAquisicao)
             .HasColumnName("DEPRECIAMESAQUISICAO")
-            .HasMaxLength(1);
+            .HasMaxLength(1)
+            .HasConversion((ValueConverter)converter);
 
         builder.Property(e => e.DepreciaMesAquisicaoDollar)
             .HasColumnName("DEPRECIAMESAQUISICAODOLLAR")
-            .HasMaxLength(1);
+            .HasMaxLength(1)
+            .HasConversion((ValueConverter)converter);
 
         builder.Property(e => e.CompetenciaInicial)
             .HasColumnName("COMPETENCIAINICIAL");

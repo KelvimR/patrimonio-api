@@ -14,11 +14,12 @@ public class EmpresaInsereDTO
     public string? Cidade { get; set; }
     public string? Estado { get; set; }
     public string? CEP { get; set; }
-    public DateTime? CompetenciaInicial { get; set; }
-    public DateTime? CompetenciaFinal { get; set; }
+    public DateOnly? CompetenciaInicial { get; set; }
+    public DateOnly? CompetenciaFinal { get; set; }
     public string? CalculoDepreciacao { get; set; }
     public string? CalculoDepreciacaoDollar { get; set; }
     public string? DepreciaMesAquisicao { get; set; }
     public string? DepreciaMesAquisicaoDollar { get; set; }
-    public string? FilialCentralizadora { get; set; }  
+    public string? FilialCentralizadora { get; set; }
+    public string? TipoCalculo { get; set; }
 }

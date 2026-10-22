@@ -1,6 +1,5 @@
 ﻿using Patrimonio.Data.DTO.Empresa;
 using Patrimonio.Exceptions;
-using Patrimonio.Models;
 using Patrimonio.Repositories;
 using Patrimonio.Services.Mappings;
 
@@ -34,37 +33,40 @@ public class EmpresaService : IEmpresaService
         return empresa.ToDetalheDTO();
     }
 
-    public async Task<EmpresaDetalheDTO> CriarEmpresaAsync(EmpresaInsereDTO empresa, CancellationToken cancellationToken)
+    public async Task<EmpresaDetalheDTO> CriarEmpresaAsync(EmpresaInsereDTO dto, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(empresa);
+        ArgumentNullException.ThrowIfNull(dto);
         
-        if(string.IsNullOrWhiteSpace(empresa.EmpresaId))
-            throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresa.EmpresaId));
+        if(string.IsNullOrWhiteSpace(dto.EmpresaId))
+            throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(dto.EmpresaId));
 
-        var empresaExiste = await _empresaRepository.ObterEmpresaPorIdAsync(empresa.EmpresaId, cancellationToken);
+        var empresaExiste = await _empresaRepository.ObterEmpresaPorIdAsync(dto.EmpresaId, cancellationToken);
         if (empresaExiste is not null)
-            throw new ConflictException($"Empresa {empresa.EmpresaId} já cadastrada!");
+            throw new ConflictException($"Empresa {dto.EmpresaId} já cadastrada!");
 
-        var entidade = EmpresaMapper.ToInsereEmpresa(empresa);
-        var empresaCriada = await _empresaRepository.CriarEmpresaAsync(entidade, cancellationToken);
+        var empresaCriada = await _empresaRepository.CriarEmpresaAsync(dto.ToEntity(), cancellationToken);
 
-        _logger.LogInformation("Empresa {EmpresaId} criada com sucesso.",empresa.EmpresaId);
+        _logger.LogInformation("Empresa {empresaCriada.EmpresaId} criada com sucesso.", empresaCriada.EmpresaId);
         return empresaCriada.ToDetalheDTO();                
     }
 
-    public async Task AtualizarEmpresaAsync(EmpresaUpdateDTO empresa, CancellationToken cancellationToken)
+    public async Task AtualizarEmpresaAsync(EmpresaUpdateDTO dto, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(empresa);
-        if (string.IsNullOrWhiteSpace(empresa.Empresa))
-            throw new ArgumentException("A empresa é obrigatória.", nameof(empresa.Empresa));
+        ArgumentNullException.ThrowIfNull(dto);
+        if (string.IsNullOrWhiteSpace(dto.EmpresaId))
+            throw new ArgumentException("A empresa é obrigatória.", nameof(dto.EmpresaId));
 
-        await ObterEmpresaPorIdAsync(empresa.Empresa, cancellationToken);        
-        var entidade = EmpresaMapper.ToUpdateEmpresa(empresa);
-        var atualizada = await _empresaRepository.AtualizarEmpresaAsync(entidade, cancellationToken);
+        var empresa = await _empresaRepository.ObterEmpresaPorIdAsync(dto.EmpresaId, cancellationToken);
+        if (empresa is null)
+            throw new KeyNotFoundException($"Empresa {dto.EmpresaId } não encontrada.");
+
+        dto.AplicarAtualizacao(empresa);
+        
+        var atualizada = await _empresaRepository.AtualizarEmpresaAsync(empresa, cancellationToken);
         if (!atualizada)
-            throw new KeyNotFoundException($"Empresa {empresa.Empresa} não encontrada para atualização.");
+            throw new KeyNotFoundException($"Empresa {dto.EmpresaId} não encontrada para atualização.");
 
-        _logger.LogInformation("Empresa {empresa.Empresa} atualizada com sucesso.", empresa.Empresa);
+        _logger.LogInformation("Empresa {empresa.Empresa} atualizada com sucesso.", empresa.EmpresaId);
         
     }
         
