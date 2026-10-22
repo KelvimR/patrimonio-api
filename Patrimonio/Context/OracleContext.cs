@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Patrimonio.Models;
+using System.Text.RegularExpressions;
 
 namespace Patrimonio.Context;
 
@@ -13,6 +14,14 @@ public class OracleContext : DbContext
 
         if (string.IsNullOrWhiteSpace(_schema))
             throw new InvalidOperationException("Schema do banco de dados não configurado.");
+
+        if (!Regex.IsMatch(_schema, @"^[A-Z][A-Z0-9_$#]*$"))
+            throw new InvalidOperationException("Schema inválido.");
+    }
+
+    public string ObterSchema()
+    {
+        return _schema.ToUpperInvariant();
     }
 
     public DbSet<Empresa> Empresas { get; set; }

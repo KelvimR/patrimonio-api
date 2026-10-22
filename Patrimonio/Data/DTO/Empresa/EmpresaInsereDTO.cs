@@ -14,8 +14,6 @@ public class EmpresaInsereDTO
     public string? Cidade { get; set; }
     public string? Estado { get; set; }
     public string? CEP { get; set; }
-    public DateOnly? CompetenciaInicial { get; set; }
-    public DateOnly? CompetenciaFinal { get; set; }
     public string? CalculoDepreciacao { get; set; }
     public string? CalculoDepreciacaoDollar { get; set; }
     public string? DepreciaMesAquisicao { get; set; }

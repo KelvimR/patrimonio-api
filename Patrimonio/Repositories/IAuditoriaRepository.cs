@@ -1,6 +1,6 @@
 ﻿using Patrimonio.Models;
 
-namespace Patrimonio.Repositories.Implementations;
+namespace Patrimonio.Repositories;
 
 public interface IAuditoriaRepository
 {
