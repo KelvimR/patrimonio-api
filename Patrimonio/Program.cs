@@ -19,6 +19,16 @@ builder.Services.AddRouteConfig();
 
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+
+builder.Services.AddScoped<ICadastroService, CadastroService>();
+builder.Services.AddScoped<ICadastroRepository, CadastroRepository>();
+
+builder.Services.AddScoped<ICentroCustoService, CentroCustoService>();
+builder.Services.AddScoped<ICentroCustoRepository, CentroCustoRepository>();
+
 builder.Services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
 
 builder.Services.AddControllers();

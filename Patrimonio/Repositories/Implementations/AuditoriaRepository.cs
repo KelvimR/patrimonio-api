@@ -7,10 +7,11 @@ namespace Patrimonio.Repositories.Implementations;
 public class AuditoriaRepository : IAuditoriaRepository
 {
     private readonly OracleContext _context;
-
+    private readonly string _schema;
     public AuditoriaRepository(OracleContext context)
     {
         _context = context;
+        _schema = _context.ObterSchema();
     }
 
     public async Task RegistrarLogAsync(Auditoria auditoria, CancellationToken cancellationToken)
@@ -18,7 +19,7 @@ public class AuditoriaRepository : IAuditoriaRepository
         ArgumentNullException.ThrowIfNull(auditoria);
 
         var logIncluido = await _context.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO LOG
+            INSERT INTO {_schema}.LOG
                 (SEQUENCIA, DATA, OPERACAO, USUARIO, EMPRESAID, NUMEROPATRIMONIAL, TIPOINCORPORACAOID, INCORPORACAO, VALORATUALIZADO, DEPRECIACAOACUMULADA)
                     VALUES (SEQ_PATRIMONIO_LOG.NEXTVAL, {DateTime.UtcNow}, {auditoria.Operacao}, {auditoria.Usuario}, {auditoria.EmpresaId},{auditoria.NumeroPatrimonial}, {auditoria.TipoIncorporacaoId}, 
                     {auditoria.Incorporacao}, {auditoria.ValorAtualizado}, {auditoria.DepreciacaoAcumulada})

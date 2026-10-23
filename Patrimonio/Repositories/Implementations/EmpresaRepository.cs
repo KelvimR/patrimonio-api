@@ -1,33 +1,37 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Oracle.ManagedDataAccess.Client;
 using Patrimonio.Context;
 using Patrimonio.Data.DTO;
 using Patrimonio.Models;
 using Patrimonio.Models.ValueObjects;
 using System.Runtime.ConstrainedExecution;
+using System.Text.RegularExpressions;
 
 namespace Patrimonio.Repositories.Implementations;
 
 public class EmpresaRepository : IEmpresaRepository
 {
-    private readonly OracleContext _context;
+    private readonly OracleContext _context;    
     private readonly IAuditoriaRepository _auditoria;
+    private readonly string _schema;
 
     public EmpresaRepository(OracleContext context, IAuditoriaRepository auditoria)
     {
-        _context = context;
+        _context = context;        
         _auditoria = auditoria;
+        _schema = _context.ObterSchema();
     }
 
     public async Task<Empresa> CriarEmpresaAsync(Empresa empresa, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(empresa);
-
+        
         await using var transacao = await _context.Database.BeginTransactionAsync(cancellationToken);
 
         var incluiEmpresa = await _context.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO EMPRESAS (
+            INSERT INTO {_schema}.EMPRESAS (
                 EMPRESAID, RAZAOSOCIAL, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP, CGC, COMPETENCIAINICIAL, COMPETENCIAFINAL,
                 CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO, DEPRECIAMESAQUISICAODOLLAR, TIPO_CALCULO, FILIAL_CENTRALIZADORA)
             VALUES(
@@ -62,16 +66,20 @@ public class EmpresaRepository : IEmpresaRepository
         if (string.IsNullOrWhiteSpace(empresaId))
             throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresaId));
 
+        var sql = $"""
+            SELECT EMPRESAID, RAZAOSOCIAL, CGC, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP,
+                PLACACORPOREA, PLACANAOCORPOREA, CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO,
+                DEPRECIAMESAQUISICAODOLLAR, COMPETENCIAINICIAL, COMPETENCIAFINAL, TIPO_CALCULO, FILIAL_CENTRALIZADORA
+            FROM {_schema}.EMPRESAS
+            WHERE EMPRESAID = :empresaId
+        """;
+
         var empresas = await _context.Empresas
-            .FromSqlInterpolated($"""
-                SELECT EMPRESAID, RAZAOSOCIAL, CGC, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP, 
-                    PLACACORPOREA, PLACANAOCORPOREA, CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO, 
-                    DEPRECIAMESAQUISICAODOLLAR, COMPETENCIAINICIAL, COMPETENCIAFINAL, TIPO_CALCULO, FILIAL_CENTRALIZADORA
-                FROM EMPRESAS
-                WHERE EMPRESAID = {empresaId} 
-                """)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
+            .FromSqlRaw(
+                sql,
+                new OracleParameter("empresaId", empresaId))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
 
         return empresas.FirstOrDefault();
     }
@@ -82,7 +90,7 @@ public class EmpresaRepository : IEmpresaRepository
         await using var transacao = await _context.Database.BeginTransactionAsync(cancellationToken);        
         
         var alterado = await _context.Database.ExecuteSqlInterpolatedAsync($"""
-                UPDATE EMPRESAS SET 
+                UPDATE {_schema}.EMPRESAS SET 
                     RAZAOSOCIAL = {empresa.RazaoSocial},
                     ENDERECO = {empresa.Endereco},
                     TELEFONE = {empresa.Telefone},
@@ -98,7 +106,8 @@ public class EmpresaRepository : IEmpresaRepository
                     CALCULADEPRECIACAO = {empresa.CalculoDepreciacao?.Valor},
                     CALCULADEPRECIACAODOLLAR = {empresa.CalculoDepreciacaoDollar?.Valor},
                     DEPRECIAMESAQUISICAO = {empresa.DepreciaMesAquisicao?.Valor},
-                    DEPRECIAMESAQUISICAODOLLAR = {empresa.DepreciaMesAquisicaoDollar?.Valor}
+                    DEPRECIAMESAQUISICAODOLLAR = {empresa.DepreciaMesAquisicaoDollar?.Valor},
+                    TIPO_CALCULO = {empresa.TipoCalculo}
                 WHERE EMPRESAID = {empresa.EmpresaId}
                 """, cancellationToken);
 

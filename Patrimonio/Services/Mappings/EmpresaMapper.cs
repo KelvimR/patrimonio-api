@@ -64,14 +64,15 @@ public static class EmpresaMapper
         empresa.DefinirCgc(dto.CNPJ);
         empresa.DefinirFilialCentralizadora(dto.FilialCentralizadora);
         empresa.DefinirTipoCalculo(dto.TipoCalculo);
+        empresa.AtualizarContato(dto.Endereco, dto.Cidade, dto.Estado, dto.CEP, dto.Telefone, dto.Ramal, dto.FAX);
 
         empresa.ConfigurarDepreciacao(
             ConverterSimNao(dto.CalculoDepreciacao),
             ConverterSimNao(dto.CalculoDepreciacaoDollar),
             ConverterSimNao(dto.DepreciaMesAquisicao),
             ConverterSimNao(dto.DepreciaMesAquisicaoDollar)        
-        );   
-        
+        );                 
+
         if(dto.CompetenciaInicial.HasValue && dto.CompetenciaFinal.HasValue)
             empresa.DefinirCompetencia(
                 dto.CompetenciaInicial.Value.ToDateTime(TimeOnly.MinValue),

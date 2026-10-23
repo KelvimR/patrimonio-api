@@ -8,16 +8,14 @@ namespace Patrimonio.Controllers;
 [Route("api/[controller]/v1")]
 public class EmpresaController : ControllerBase
 {
-    private readonly ILogger<EmpresaController> _logger;
     private readonly IEmpresaService _empresaService;
 
-    public EmpresaController(ILogger<EmpresaController> logger, IEmpresaService empresaService)
+    public EmpresaController(IEmpresaService empresaService)
     {
-        _logger = logger;
         _empresaService = empresaService;
     }
 
-    [HttpGet]
+    [HttpGet("ObterEmpresas")]
     [ProducesResponseType(typeof(List<EmpresaResumoDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
@@ -28,7 +26,7 @@ public class EmpresaController : ControllerBase
 
     }
 
-    [HttpGet("{empresaId}")]
+    [HttpGet("ObterEmpresaPorId/{empresaId}")]
     [ProducesResponseType(typeof(EmpresaDetalheDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -41,7 +39,7 @@ public class EmpresaController : ControllerBase
 
     }
 
-    [HttpPost]
+    [HttpPost("CriarEmpresa")]
     [ProducesResponseType(typeof(EmpresaDetalheDTO), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
@@ -56,7 +54,7 @@ public class EmpresaController : ControllerBase
     }
 
 
-    [HttpPut]
+    [HttpPut("AtualizarEmpresa")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -68,7 +66,7 @@ public class EmpresaController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{empresaId}")]
+    [HttpDelete("DeletarEmpresa/{empresaId}")]
     [ProducesResponseType(typeof(EmpresaDetalheDTO), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
