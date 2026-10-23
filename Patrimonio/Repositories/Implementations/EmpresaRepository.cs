@@ -71,7 +71,7 @@ public class EmpresaRepository : IEmpresaRepository
                 PLACACORPOREA, PLACANAOCORPOREA, CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO,
                 DEPRECIAMESAQUISICAODOLLAR, COMPETENCIAINICIAL, COMPETENCIAFINAL, TIPO_CALCULO, FILIAL_CENTRALIZADORA
             FROM {_schema}.EMPRESAS
-            WHERE EMPRESAID = {empresaId}
+            WHERE EMPRESAID = :empresaId
         """;
 
         var empresas = await _context.Empresas
