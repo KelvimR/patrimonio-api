@@ -25,6 +25,10 @@ public class OracleContext : DbContext
     }
 
     public DbSet<Empresa> Empresas { get; set; }
+    public DbSet<Produto> Produto { get; set; }
+    public DbSet<Cadastro> Cadastro { get; set; }
+    public DbSet<CentroCusto> CentroCusto { get; set; }
+    public DbSet<InventarioAuditoria> InventarioAuditoria { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

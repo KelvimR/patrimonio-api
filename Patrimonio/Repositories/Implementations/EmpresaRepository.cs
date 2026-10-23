@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Oracle.ManagedDataAccess.Client;
 using Patrimonio.Context;
 using Patrimonio.Data.DTO;
 using Patrimonio.Models;
@@ -65,16 +66,20 @@ public class EmpresaRepository : IEmpresaRepository
         if (string.IsNullOrWhiteSpace(empresaId))
             throw new ArgumentException("O identificador da empresa é obrigatório.", nameof(empresaId));
 
+        var sql = $"""
+            SELECT EMPRESAID, RAZAOSOCIAL, CGC, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP,
+                PLACACORPOREA, PLACANAOCORPOREA, CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO,
+                DEPRECIAMESAQUISICAODOLLAR, COMPETENCIAINICIAL, COMPETENCIAFINAL, TIPO_CALCULO, FILIAL_CENTRALIZADORA
+            FROM {_schema}.EMPRESAS
+            WHERE EMPRESAID = {empresaId}
+        """;
+
         var empresas = await _context.Empresas
-            .FromSqlInterpolated($"""
-                SELECT EMPRESAID, RAZAOSOCIAL, CGC, ENDERECO, TELEFONE, RAMAL, FAX, CIDADE, ESTADO, CEP, 
-                    PLACACORPOREA, PLACANAOCORPOREA, CALCULADEPRECIACAO, CALCULADEPRECIACAODOLLAR, DEPRECIAMESAQUISICAO, 
-                    DEPRECIAMESAQUISICAODOLLAR, COMPETENCIAINICIAL, COMPETENCIAFINAL, TIPO_CALCULO, FILIAL_CENTRALIZADORA
-                FROM {_schema}.EMPRESAS
-                WHERE EMPRESAID = {empresaId} 
-                """)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
+            .FromSqlRaw(
+                sql,
+                new OracleParameter("empresaId", empresaId))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
 
         return empresas.FirstOrDefault();
     }
